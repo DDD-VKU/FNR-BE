@@ -17,4 +17,13 @@ export class AppController {
       message: 'Hello World!',
     };
   }
+
+  @Get('healh-check')
+  @HttpCode(HttpStatus.OK)
+  postHelloCheck() {
+    return {
+      status: HttpStatus.OK,
+      message: 'Hello World!',
+    };
+  }
 }

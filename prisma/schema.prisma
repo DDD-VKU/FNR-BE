@@ -13,8 +13,102 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model customer {
-  id    String @id
-  name  String
-  email String?
+model customers {
+  id         Int       @id @default(autoincrement())
+  name       String
+  phone      String?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  account accounts?
+
+  carts carts[]
+}
+
+model accounts {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+
+  customers   customers @relation(fields: [customer_id], references: [id])
+  customer_id Int       @unique
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+model carts {
+  id Int @id @default(autoincrement())
+
+  customer_id Int
+  customer    customers @relation(fields: [customer_id], references: [id])
+}
+
+model categories {
+  id         Int       @id @default(autoincrement())
+  name       String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  // relationships
+  products products[]
+}
+
+model products {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  SKU         String?
+  tags        String[]
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  deleted_at  DateTime?
+
+  // relationships
+  products_variants products_variants?
+  products_images   products_images?
+  products_details  products_details?
+  categories        categories?        @relation(fields: [categories_id], references: [id])
+  categories_id     Int?
+}
+
+model products_images {
+  id         Int       @id @default(autoincrement())
+  images     String[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  // relationships
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int      @unique
+}
+
+model products_details {
+  id               Int       @id @default(autoincrement())
+  sort_description String
+  long_description String
+  //... 
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+
+  // relationships
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int      @unique
+}
+
+model products_prices {
+  id Int @id @default(autoincrement())
+}
+
+model products_variants {
+  id          Int      @id @default(autoincrement())
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int      @unique
+  size        String[]
+  color       String[]
 }
