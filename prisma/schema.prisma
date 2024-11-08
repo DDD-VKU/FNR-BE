@@ -27,12 +27,11 @@ model customers {
   deleted_at DateTime?
 
   carts              carts[]
-  order              order[]
+  order              orders[]
   favortite_products favorite_product[]
 
   account accounts?
   address address?
-
   reviews reviews[]
 }
 
@@ -64,8 +63,8 @@ model address {
   customer_id Int       @unique
 
   // relationship with order
-  order    order @relation(fields: [order_id], references: [id])
-  order_id Int   @unique
+  orders   orders @relation(fields: [order_id], references: [id])
+  order_id Int    @unique
 }
 
 enum Type_Payment {
@@ -75,29 +74,34 @@ enum Type_Payment {
   BANK_TRANSFER
 }
 
-model order {
-  id            Int          @id @default(autoincrement())
-  orderDay      DateTime     @default(now())
-  paymentMethod Type_Payment
-  subtotal      Int
+model orders {
+  id             Int          @id @default(autoincrement())
+  order_day      DateTime     @default(now())
+  payment_method Type_Payment
+  subtotal       Float
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  deleted_at     DateTime?
 
   // relationship with customer
   customer    customers @relation(fields: [customer_id], references: [id])
   customer_id Int
 
   // relationship with order_detail
-  order_detail order_detail[]
-
-  adress address?
+  order_detail order_details[]
+  adress       address?
 }
 
-model order_detail {
-  id       Int @id @default(autoincrement())
-  price    Int
-  quantity Int
+model order_details {
+  id         Int       @id @default(autoincrement())
+  price      Int
+  quantity   Int
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 
   // relationship with order
-  order    order @relation(fields: [order_id], references: [id])
+  order    orders @relation(fields: [order_id], references: [id])
   order_id Int
 
   // relationship with product
@@ -106,15 +110,14 @@ model order_detail {
 }
 
 model carts {
-  id Int @id @default(autoincrement())
-
+  id          Int       @id @default(autoincrement())
   customer_id Int
   customer    customers @relation(fields: [customer_id], references: [id])
 
-  cart_item cart_item[]
+  cart_item cart_items[]
 }
 
-model cart_item {
+model cart_items {
   id       Int   @id @default(autoincrement())
   price    Float
   quantity Int
@@ -140,17 +143,16 @@ model products {
   products_variants products_variants?
   products_images   products_images?
   products_details  products_details?
+  products_prices   products_prices?
 
   // relationships with category
   categories    categories? @relation(fields: [categories_id], references: [id])
   categories_id Int?
 
-  order_detail     order_detail[]
+  order_detail     order_details[]
   favorite_product favorite_product[]
-
-  cart_item cart_item[]
-
-  reviews reviews[]
+  cart_items       cart_items[]
+  reviews          reviews[]
 }
 
 model reviews {
@@ -159,7 +161,7 @@ model reviews {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
-  reting     Float
+  rating     Float
 
   // relationships with product
   products    products @relation(fields: [products_id], references: [id])
@@ -206,11 +208,9 @@ model products_details {
   products    products @relation(fields: [products_id], references: [id])
   products_id Int      @unique
 
-  dimensions dimensions[]
-
-  warrantys warrantys[]
-
-  general general[]
+  dimensions dimensions?
+  warrantys  warrantys?
+  general    general?
 }
 
 model products_images {
@@ -226,7 +226,16 @@ model products_images {
 }
 
 model products_prices {
-  id Int @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
+  price        Float
+  sale_percent Float
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  deleted_at   DateTime?
+
+  // relationships
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int      @unique
 }
 
 model products_variants {
