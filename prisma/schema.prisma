@@ -1,13 +1,18 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// 'id' - primary key 
+// 'default' - a data 
+// 'updateAt' auto up-time 
+// '?' - enabal to null  
 
 generator client {
   provider = "prisma-client-js"
 }
 
+//Source DB from env file
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -21,9 +26,14 @@ model customers {
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
-  account accounts?
+  carts              carts[]
+  order              order[]
+  favortite_products favorite_product[]
 
-  carts carts[]
+  account accounts?
+  address address?
+
+  reviews reviews[]
 }
 
 model accounts {
@@ -39,22 +49,81 @@ model accounts {
   deleted_at DateTime?
 }
 
+model address {
+  id         Int    @id @default(autoincrement())
+  city       String
+  country    String
+  first_name String
+  last_name  String
+  phone      String
+  province   String
+  zipcode    String
+
+  // relationship with customer
+  customer    customers @relation(fields: [customer_id], references: [id])
+  customer_id Int       @unique
+
+  // relationship with order
+  order    order @relation(fields: [order_id], references: [id])
+  order_id Int   @unique
+}
+
+enum Type_Payment {
+  CREDIT_CARD
+  PAYPAL
+  CASH
+  BANK_TRANSFER
+}
+
+model order {
+  id            Int          @id @default(autoincrement())
+  orderDay      DateTime     @default(now())
+  paymentMethod Type_Payment
+  subtotal      Int
+
+  // relationship with customer
+  customer    customers @relation(fields: [customer_id], references: [id])
+  customer_id Int
+
+  // relationship with order_detail
+  order_detail order_detail[]
+
+  adress address?
+}
+
+model order_detail {
+  id       Int @id @default(autoincrement())
+  price    Int
+  quantity Int
+
+  // relationship with order
+  order    order @relation(fields: [order_id], references: [id])
+  order_id Int
+
+  // relationship with product
+  product    products @relation(fields: [product_id], references: [id])
+  product_id Int
+}
+
 model carts {
   id Int @id @default(autoincrement())
 
   customer_id Int
   customer    customers @relation(fields: [customer_id], references: [id])
+
+  cart_item cart_item[]
 }
 
-model categories {
-  id         Int       @id @default(autoincrement())
-  name       String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+model cart_item {
+  id       Int   @id @default(autoincrement())
+  price    Float
+  quantity Int
 
-  // relationships
-  products products[]
+  carts   carts @relation(fields: [cart_id], references: [id])
+  cart_id Int   @unique
+
+  product    products @relation(fields: [product_id], references: [id])
+  product_id Int      @unique
 }
 
 model products {
@@ -67,12 +136,81 @@ model products {
   updated_at  DateTime  @updatedAt
   deleted_at  DateTime?
 
-  // relationships
+  // relationships with each
   products_variants products_variants?
   products_images   products_images?
   products_details  products_details?
-  categories        categories?        @relation(fields: [categories_id], references: [id])
-  categories_id     Int?
+
+  // relationships with category
+  categories    categories? @relation(fields: [categories_id], references: [id])
+  categories_id Int?
+
+  order_detail     order_detail[]
+  favorite_product favorite_product[]
+
+  cart_item cart_item[]
+
+  reviews reviews[]
+}
+
+model reviews {
+  id         Int       @id @default(autoincrement())
+  comment    String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  reting     Float
+
+  // relationships with product
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int
+
+  // relationship with customer
+  customer    customers @relation(fields: [customer_id], references: [id])
+  customer_id Int
+}
+
+model favorite_product {
+  id Int @id @default(autoincrement())
+
+  // relationship with customer
+  customer    customers @relation(fields: [customer_id], references: [id])
+  customer_id Int
+
+  // relationship with products
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int
+}
+
+model categories {
+  id         Int       @id @default(autoincrement())
+  name       String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  products products[]
+}
+
+model products_details {
+  id               Int    @id @default(autoincrement())
+  sort_description String
+  long_description String
+
+  //... 
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  // relationships
+  products    products @relation(fields: [products_id], references: [id])
+  products_id Int      @unique
+
+  dimensions dimensions[]
+
+  warrantys warrantys[]
+
+  general general[]
 }
 
 model products_images {
@@ -81,20 +219,6 @@ model products_images {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
-
-  // relationships
-  products    products @relation(fields: [products_id], references: [id])
-  products_id Int      @unique
-}
-
-model products_details {
-  id               Int       @id @default(autoincrement())
-  sort_description String
-  long_description String
-  //... 
-  created_at       DateTime  @default(now())
-  updated_at       DateTime  @updatedAt
-  deleted_at       DateTime?
 
   // relationships
   products    products @relation(fields: [products_id], references: [id])
@@ -111,4 +235,43 @@ model products_variants {
   products_id Int      @unique
   size        String[]
   color       String[]
+}
+
+model dimensions {
+  id                             Int              @id @default(autoincrement())
+  width                          Float?
+  height                         Float?
+  depth                          Float?
+  weight                         Float?
+  seat_height                    Float?
+  leg_height                     Float?
+  productsDetail                 products_details @relation(fields: [products_dimensions_details_id], references: [id])
+  products_dimensions_details_id Int              @unique
+}
+
+model warrantys {
+  id                            Int              @id @default(autoincrement())
+  warranty_summary              String?
+  warranty_service_type         String?
+  covered_in_warranty           String?
+  not_covered_in_warranty       String?
+  domestic_warranty             String?
+  productsDetail                products_details @relation(fields: [products_warrantys_details_id], references: [id])
+  products_warrantys_details_id Int              @unique
+}
+
+model general {
+  id                  Int     @id @default(autoincrement())
+  sales_package       String?
+  model_number        String?
+  secondary_material  String?
+  configuration       String?
+  upholstery_material String?
+  upholstery_color    String?
+
+  //relationship
+  productsDetail products_details @relation(fields: [products_general_details_id], references: [id])
+
+  // Foreign key
+  products_general_details_id Int @unique
 }
