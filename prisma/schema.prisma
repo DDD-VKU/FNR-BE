@@ -31,7 +31,7 @@ model customers {
   favortite_products favorite_product[]
 
   account accounts?
-  address address?
+  address address[]
   reviews reviews[]
 }
 
@@ -60,11 +60,8 @@ model address {
 
   // relationship with customer
   customer    customers @relation(fields: [customer_id], references: [id])
-  customer_id Int       @unique
-
-  // relationship with order
-  orders   orders @relation(fields: [order_id], references: [id])
-  order_id Int    @unique
+  customer_id Int
+  orders      orders[]
 }
 
 enum Type_Payment {
@@ -89,7 +86,8 @@ model orders {
 
   // relationship with order_detail
   order_detail order_details[]
-  adress       address?
+  adress       address?        @relation(fields: [addressId], references: [id])
+  addressId    Int?
 }
 
 model order_details {
