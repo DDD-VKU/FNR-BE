@@ -13,12 +13,14 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { ApiResponse } from 'src/common/api-response';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create customer' })
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     const result = await this.customerService.create(createCustomerDto);
     if (result) {
