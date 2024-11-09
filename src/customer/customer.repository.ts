@@ -5,6 +5,19 @@ import { CreateAddressDto } from './dto/create-address.dto';
 
 @Injectable()
 export class CustomerRepository {
+  async findOneCustomer(id: number) {
+    try {
+      const result = await this.prismaService.customers.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      return result;
+    } catch (error) {
+      return null;
+    }
+  }
+
   async findAll() {
     try {
       const result = await this.prismaService.customers.findMany();

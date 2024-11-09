@@ -13,11 +13,13 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { ApiResponse } from 'src/common/api-response';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @ApiOperation({ summary: 'Create customer' })
   @Post()
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     const result = await this.customerService.create(createCustomerDto);
@@ -74,7 +76,7 @@ export class CustomerController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.customerService.findOne(+id);
+    return this.customerService.findOneCustomer(+id);
   }
 
   @Patch(':id')
@@ -89,4 +91,7 @@ export class CustomerController {
   remove(@Param('id') id: string) {
     return this.customerService.remove(+id);
   }
+
+  @Get('address/:id')
+  findAllAddressByCustomerId(@Param('id') id: string) {}
 }
