@@ -87,6 +87,9 @@ export class CustomerController {
     return this.customerService.update(+id, updateCustomerDto);
   }
 
+  @Delete('address/:id')
+  removeAddress(@Param('id') id: string) {}
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.customerService.remove(+id);
