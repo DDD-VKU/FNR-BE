@@ -30,4 +30,14 @@ export class CustomerService {
   remove(id: number) {
     return `This action removes a #${id} customer`;
   }
+
+  //xóa customer
+  async delete(id: number) {
+    return await this.customerRepository.deleteCustomer(id);
+  }
+
+  //tìm địa chỉ của customer theo id
+  async findAllAddressByCustomerId(id: number) {
+    return await this.customerRepository.findAllAddressByCustomerId(id);
+  }
 }

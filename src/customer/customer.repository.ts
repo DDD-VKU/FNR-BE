@@ -52,4 +52,37 @@ export class CustomerRepository {
       return null;
     }
   }
+
+  //xóa customer
+  async deleteCustomer(id: number) {
+    try {
+      const result = await this.prismaService.customers.delete({
+        where: {
+          id: id,
+        },
+      });
+      console.log(result)
+      return result;
+      
+    } catch (error) {
+      console.log(error)
+      return null;
+    }
+    
+  }
+
+  //tìm địa chỉ customer theo id
+  
+  async findAllAddressByCustomerId(id: number) {
+    try {
+      const result = await this.prismaService.address.findMany({
+        where: {
+          customer_id: id,
+        },
+      });
+      return result;
+    } catch (error) {
+      return null;
+    }
+  }
 }
