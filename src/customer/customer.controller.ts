@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -57,8 +59,8 @@ export class CustomerController {
   }
 
   @Get()
-  async findAll() {
-    const result = await this.customerService.findAll();
+  async findAllCustomers() {
+    const result = await this.customerService.findAllCustomers();
     if (result) {
       return ApiResponse.buildCollectionApiResponse(
         result,
@@ -75,20 +77,55 @@ export class CustomerController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customerService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const result = await this.customerService.findOne(+id);
+      if (result) {
+        return ApiResponse.buildApiResponse(
+          result,
+          HttpStatus.OK,
+          'Customer fetched successfully',
+        );
+      } else {
+        throw new NotFoundException('Customer not found');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException(
+        'An error occurred while fetching customer',
+      );
+    }
   }
 
+  @Delete('address/:id')
+  @ApiOperation({ summary: 'Delete address by id' })
+  async deleteAddress(@Param('id') id: string) {
+    await this.customerService.deleteAddress(+id);
+    return ApiResponse.buildApiResponse(
+      null,
+      HttpStatus.NO_CONTENT, // 204
+      'Address deleted successfully',
+    );
+  }
   @Patch(':id')
-  update(
+  @ApiOperation({ summary: 'Update customer by id' })
+  async updateCustomer(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    return this.customerService.update(+id, updateCustomerDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customerService.remove(+id);
+    const result = await this.customerService.update(+id, updateCustomerDto);
+    if (result) {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Customer updated successfully',
+      );
+    } else {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to update customer',
+      );
+    }
   }
 }
