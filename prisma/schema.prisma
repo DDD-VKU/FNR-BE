@@ -23,7 +23,7 @@ model customers {
   name       String
   phone      String?
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 
   carts              carts[]
@@ -44,7 +44,7 @@ model accounts {
   customer_id Int       @unique
 
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 }
 
@@ -77,7 +77,7 @@ model orders {
   payment_method Type_Payment
   subtotal       Float
   created_at     DateTime     @default(now())
-  updated_at     DateTime     @updatedAt
+  updated_at     DateTime     @default(now()) @updatedAt
   deleted_at     DateTime?
 
   // relationship with customer
@@ -95,7 +95,7 @@ model order_details {
   price      Int
   quantity   Int
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 
   // relationship with order
@@ -134,7 +134,7 @@ model products {
   SKU         String?
   tags        String[]
   created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  updated_at  DateTime  @default(now()) @updatedAt
   deleted_at  DateTime?
 
   // relationships with each
@@ -157,7 +157,7 @@ model reviews {
   id         Int       @id @default(autoincrement())
   comment    String
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
   rating     Float
 
@@ -186,7 +186,7 @@ model categories {
   id         Int       @id @default(autoincrement())
   name       String
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 
   products products[]
@@ -199,7 +199,7 @@ model products_details {
 
   //... 
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 
   // relationships
@@ -215,7 +215,7 @@ model products_images {
   id         Int       @id @default(autoincrement())
   images     String[]
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 
   // relationships
@@ -228,7 +228,7 @@ model products_prices {
   price        Float
   sale_percent Float
   created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  updated_at   DateTime  @default(now()) @updatedAt
   deleted_at   DateTime?
 
   // relationships

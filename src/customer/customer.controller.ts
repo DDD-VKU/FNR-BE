@@ -113,11 +113,14 @@ export class CustomerController {
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    const result = await this.customerService.update(+id, updateCustomerDto);
+    const result = await this.customerService.updateCustomer(
+      +id,
+      updateCustomerDto,
+    );
     if (result) {
       return ApiResponse.buildApiResponse(
         result,
-        HttpStatus.OK,
+        HttpStatus.CREATED,
         'Customer updated successfully',
       );
     } else {

@@ -37,13 +37,18 @@ export class CustomerService {
     }
   }
   async updateCustomer(id: number, updateCustomerDto: UpdateCustomerDto) {
-    const updatedCustomer = await this.customerRepository.updateCustomer(
-      id,
-      updateCustomerDto,
-    );
-    if (!updatedCustomer) {
-      throw new NotFoundException('Customer not found');
+    try {
+      const updatedCustomer = await this.customerRepository.updateCustomer(
+        id,
+        updateCustomerDto,
+      );
+      if (!updatedCustomer) {
+        throw new NotFoundException('Customer not found');
+      }
+      return updatedCustomer;
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      throw new Error('Failed to update customer');
     }
-    return updatedCustomer;
   }
 }

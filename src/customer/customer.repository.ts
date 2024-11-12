@@ -60,7 +60,6 @@ export class CustomerRepository {
     if (!address) {
       throw new NotFoundException('Address not found');
     }
-
     try {
       await this.prismaService.address.delete({
         where: { id },
@@ -71,20 +70,14 @@ export class CustomerRepository {
   }
   async updateCustomer(id: number, updateCustomerDto: UpdateCustomerDto) {
     try {
-      const existingCustomer = await this.prismaService.customers.findUnique({
-        where: { id },
-      });
-
-      if (!existingCustomer) {
-        throw new NotFoundException('Customer not found');
-      }
-      const updatedCustomer = await this.prismaService.customers.update({
+      const result = await this.prismaService.customers.update({
         where: { id },
         data: updateCustomerDto,
       });
-      return updatedCustomer;
+      return result;
     } catch (error) {
-      throw error;
+      console.error('Error in updateCustomer:', error);
+      return null;
     }
   }
 }
