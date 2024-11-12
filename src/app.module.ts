@@ -5,28 +5,16 @@ import { AppRepository } from './app.repository';
 import { PrismaModule } from './prisma/prisma.module';
 import { CustomerModule } from './customer/customer.module';
 import { AuthModule } from './auth/auth.module';
-import { AccessGuard } from './auth/guard/access-token.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { AtGuard } from './auth/guards';
 
 const providers = [
   AppService,
   AppRepository,
-  {
-    provide: APP_GUARD,
-    useClass: AccessGuard,
-  },
+  { provide: APP_GUARD, useClass: AtGuard },
 ];
 @Module({
-  imports: [
-    PrismaModule,
-    CustomerModule,
-    AuthModule,
-    JwtModule.register({
-      global: true,
-      secret: 'rM0h6l5IrNeGnYXJ6qxbs3TRyVwqPc4oWQasTRyG',
-      signOptions: { expiresIn: '1d' },
-    }),
-  ],
+  imports: [PrismaModule, CustomerModule, AuthModule],
   controllers: [AppController],
   providers: providers,
 })
