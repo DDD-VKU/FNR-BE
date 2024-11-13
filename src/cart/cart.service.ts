@@ -9,4 +9,13 @@ export class CartService {
   async deleteCart(customer_id: number) {
     return this.cartRepository.deleteCart(customer_id);
   }
+
+  async countTotal(customer_id: number) {
+    try {
+      const sum = await this.cartRepository.countTotal(customer_id);
+      return sum;
+    } catch (error) {
+      throw new NotFoundException('Cart not found for this user');
+    }
+  }
 }

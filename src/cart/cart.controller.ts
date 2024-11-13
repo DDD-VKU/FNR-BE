@@ -4,6 +4,7 @@ import {
   Delete,
   HttpStatus,
   ParseIntPipe,
+  Get,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { ApiResponse } from 'src/common/api-response';
@@ -22,5 +23,12 @@ export class CartController {
       HttpStatus.NO_CONTENT,
       'Cart has been deleted',
     );
+  }
+  //Calculate the total
+  @Get(':customer_id/total')
+  @ApiOperation({ summary: 'Get cart total' })
+  async countTotal(@Param('customer_id') customer_id: number) {
+    await this.cartService.countTotal(customer_id);
+    return ApiResponse.buildApiResponse(null, HttpStatus.OK, '====Total====');
   }
 }
