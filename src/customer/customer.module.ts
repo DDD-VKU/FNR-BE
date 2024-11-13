@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CustomerController } from './customer.controller';
 import { CustomerRepository } from './customer.repository';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 const providers = [CustomerService, CustomerRepository];
@@ -10,5 +9,6 @@ const providers = [CustomerService, CustomerRepository];
   controllers: [CustomerController],
   providers: providers,
   imports: [PrismaModule],
+  exports: providers,
 })
 export class CustomerModule {}
