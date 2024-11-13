@@ -7,6 +7,11 @@ import { AuthService } from './auth.service';
 @Module({
   providers: [RtStrategy, AtStrategy, AuthService],
   controllers: [AuthController],
-  imports: [JwtModule.register({})],
+  imports: [
+    JwtModule.register({
+      secret: process.env.AT_SECRET,
+      signOptions: { expiresIn: '15m' },
+    }),
+  ],
 })
 export class AuthModule { }
