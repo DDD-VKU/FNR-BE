@@ -17,18 +17,38 @@ export class CartController {
   @Delete(':customer_id')
   @ApiOperation({ summary: 'Delete cart' })
   async deleteCart(@Param('customer_id', ParseIntPipe) customer_id: number) {
-    await this.cartService.deleteCart(customer_id);
-    return ApiResponse.buildApiResponse(
-      null,
-      HttpStatus.NO_CONTENT,
-      'Cart has been deleted',
-    );
+    try {
+      await this.cartService.deleteCart(customer_id);
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.NO_CONTENT,
+        'Cart has been deleted',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        error.message,
+      );
+    }
   }
-  //Calculate the total
-  @Get(':customer_id/total')
+  //ApiCalculate the total
+  @Get(':customer_id')
   @ApiOperation({ summary: 'Get cart total' })
-  async countTotal(@Param('customer_id') customer_id: number) {
-    await this.cartService.countTotal(customer_id);
-    return ApiResponse.buildApiResponse(null, HttpStatus.OK, '====Total====');
+  async countTotal(@Param('customer_id', ParseIntPipe) customer_id: number) {
+    try {
+      const total = await this.cartService.countTotal(customer_id);
+      return ApiResponse.buildApiResponse(
+        { total },
+        HttpStatus.OK,
+        'Total has been calculated',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        error.message,
+      );
+    }
   }
 }

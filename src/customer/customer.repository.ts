@@ -24,10 +24,7 @@ export class CustomerRepository {
       const result = await this.prismaService.address.create({
         data: address,
       });
-
-      if (result) {
-        return result;
-      }
+      return result;
     } catch (error) {
       return null;
     }

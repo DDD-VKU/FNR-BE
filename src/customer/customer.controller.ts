@@ -100,12 +100,20 @@ export class CustomerController {
   @Delete('address/:id')
   @ApiOperation({ summary: 'Delete address by id' })
   async deleteAddress(@Param('id') id: string) {
-    await this.customerService.deleteAddress(+id);
-    return ApiResponse.buildApiResponse(
-      null,
-      HttpStatus.NO_CONTENT, // 204
-      'Address deleted successfully',
-    );
+    try {
+      await this.customerService.deleteAddress(+id);
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.NO_CONTENT, // 204
+        'Address deleted successfully',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to delete address',
+      );
+    }
   }
   @Patch(':id')
   @ApiOperation({ summary: 'Update customer by id' })
@@ -113,17 +121,17 @@ export class CustomerController {
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    const result = await this.customerService.updateCustomer(
-      +id,
-      updateCustomerDto,
-    );
-    if (result) {
+    try {
+      const result = await this.customerService.updateCustomer(
+        +id,
+        updateCustomerDto,
+      );
       return ApiResponse.buildApiResponse(
         result,
         HttpStatus.CREATED,
         'Customer updated successfully',
       );
-    } else {
+    } catch (error) {
       return ApiResponse.buildApiResponse(
         null,
         HttpStatus.BAD_REQUEST,
