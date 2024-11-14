@@ -15,11 +15,7 @@ export class CartRepository {
     return cart;
   }
   async deleteCart(customer_id: number) {
-    const findCart = await this.prismaService.carts.findFirst({
-      where: {
-        id: customer_id,
-      },
-    });
+    const findCart = await this.findCartByCustomerId(customer_id);
     if (findCart == null) {
       throw new NotFoundException('Cart not found for this user');
     }
@@ -29,7 +25,6 @@ export class CartRepository {
     return result;
   }
 
-  // Tính tổng các sản phẩm trong giỏ hàng của khách hàng
   async countTotal(customer_id: number): Promise<number> {
     const cartItems = await this.prismaService.cart_items.findMany({
       where: { carts: { customer_id } },
@@ -39,7 +34,6 @@ export class CartRepository {
       },
     });
 
-    // Tính tổng giá trị giỏ hàng
     return cartItems.reduce(
       (total, item) => total + item.price * item.quantity,
       0,
