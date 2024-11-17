@@ -86,7 +86,7 @@ model orders {
 
   // relationship with order_detail
   order_detail order_details[]
-  address       address?        @relation(fields: [addressId], references: [id])
+  address      address?        @relation(fields: [addressId], references: [id])
   addressId    Int?
 }
 
@@ -186,7 +186,7 @@ model categories {
   id         Int       @id @default(autoincrement())
   name       String
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @updatedAt
   deleted_at DateTime?
 
   products products[]
