@@ -50,8 +50,12 @@ export class AuthService {
       email: result.email,
     };
 
+    delete result.password;
     const token = await this.getTokens(payload.customer_id, payload.email);
-    return token;
+    return {
+      result,
+      ...token,
+    };
   }
 
   async getTokens(customer_id: number, email: string): Promise<Tokens> {
@@ -81,7 +85,11 @@ export class AuthService {
       customer_id: result.id,
       email: result.email,
     };
+    delete result.password;
     const token = await this.getTokens(payload.customer_id, payload.email);
-    return token;
+    return {
+      ...result,
+      ...token,
+    };
   }
 }

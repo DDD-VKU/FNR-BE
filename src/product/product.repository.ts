@@ -119,17 +119,10 @@ export class ProductRepository {
   async findAll() {
     return await this.prismaService.products.findMany({
       include: {
-        products_variants: true,
+        // products_variants: true,
         products_images: true,
-        products_details: {
-          include: {
-            dimensions: true,
-            warrantys: true,
-            general: true,
-          },
-        },
+        products_details: true,
         products_prices: true,
-        categories: true,
       },
     });
   }
