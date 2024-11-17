@@ -19,7 +19,6 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     //1. Check email has been registered
     const user = await this.authRepository.findUserByEmail(registerDto.email);
-    console.log(user);
     if (user) {
       throw new Error('Email already registered');
     }
@@ -30,6 +29,7 @@ export class AuthService {
       phone: registerDto.phone,
     };
     const customer = await this.customerService.create(customerDto);
+    console.log(customer);
     if (!customer) {
       throw new Error('Fail to create customer');
     }

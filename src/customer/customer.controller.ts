@@ -13,7 +13,8 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { ApiResponse } from 'src/common/api-response';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('customer')
 export class CustomerController {
@@ -21,6 +22,7 @@ export class CustomerController {
 
   @ApiOperation({ summary: 'Create customer' })
   @Post()
+  @Public()
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     const result = await this.customerService.create(createCustomerDto);
     if (result) {
@@ -56,6 +58,7 @@ export class CustomerController {
     }
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Get()
   async findAll() {
     const result = await this.customerService.findAll();
