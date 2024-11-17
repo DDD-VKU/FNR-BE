@@ -59,7 +59,7 @@ model address {
   zipcode    String
 
   // relationship with customer
-  customer    customers @relation(fields: [customer_id], references: [id])
+  customer    customers @relation(fields: [customer_id], references: [id], onDelete: Cascade)
   customer_id Int
   orders      orders[]
 }
@@ -86,7 +86,7 @@ model orders {
 
   // relationship with order_detail
   order_detail order_details[]
-  adress       address?        @relation(fields: [addressId], references: [id])
+  address       address?        @relation(fields: [addressId], references: [id])
   addressId    Int?
 }
 

@@ -76,8 +76,48 @@ export class CustomerController {
       );
     }
   }
+  //xóa customer
+  @ApiOperation({ summary: 'Delete customer' })
+  @Delete(':id')
+  async deleteCustomer(@Param('id') id: string) {
+    const result = await this.customerService.delete(+id);
+    if (result) { 
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Customer deleted successfully',
+      );
+    } else {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to delete customer',
+      );
+    }
+  }
 
-  @Get(':id')
+  // tìm địa chỉ của 1 khách hàng
+  @ApiOperation({ summary: 'Get customer address' })
+  @Get('address/:id')
+  async findAddressByCustomerId(@Param('id') id: string) {
+    const result = await this.customerService.findAllAddressByCustomerId(+id);
+    if (result) {
+      return ApiResponse.buildCollectionApiResponse(
+        result,
+        HttpStatus.OK,
+        'Customer address fetched successfully',
+      );
+    } else {
+      return ApiResponse.buildCollectionApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to fetch customer address',
+      );
+    }
+  }
+    
+
+    @Get(':id')
   findOne(@Param('id') id: string) {
     return this.customerService.findOneCustomer(+id);
   }
