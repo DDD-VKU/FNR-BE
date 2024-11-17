@@ -18,4 +18,4 @@ const providers = [
   controllers: [AppController],
   providers: providers,
 })
-export class AppModule { }
+export class AppModule {}
