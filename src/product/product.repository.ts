@@ -50,7 +50,9 @@ export class ProductRepository {
             },
           },
           products_images: {
-            create: createProductDto.product_images.images,
+            create: {
+              images: createProductDto.product_images.images,
+            },
           },
           products_prices: {
             create: createProductDto.prices,
