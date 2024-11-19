@@ -22,7 +22,21 @@ export class ProductController {
   @Public()
   @ApiOperation({ summary: 'Get product by id' })
   async findOne(@Param('id') id: string) {
-    return await this.productService.findOne(+id);
+    const result = await this.productService.findOne(+id);
+    try {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Product fetched successfully',
+      );
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to fetch product',
+      );
+    }
   }
 
   @ApiOperation({ summary: 'Create category' })

@@ -13,6 +13,7 @@ export class ProductRepository {
         products_details: true,
         products_images: true,
         products_prices: true,
+        categories: true,
       },
     });
     return product;
