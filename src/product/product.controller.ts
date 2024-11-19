@@ -102,6 +102,19 @@ export class ProductController {
   @Post()
   @Public()
   async create(@Body() createProductDto: CreateProductDto) {
-    return await this.productService.create(createProductDto);
+    const result = await this.productService.create(createProductDto);
+    try {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.CREATED,
+        'Product created successfully',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to create product',
+      );
+    }
   }
 }
