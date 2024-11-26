@@ -118,13 +118,28 @@ export class ProductRepository {
 
   //lấy tất cả product
   async findAll() {
-    return await this.prismaService.products.findMany({
+    const result = await this.prismaService.products.findMany({
       include: {
         // products_variants: true,
         products_images: true,
-        products_details: true,
+        // products_details: true,
         products_prices: true,
       },
     });
+
+    console.log(result[0]);
+
+    
+
+    const products  = result.map((item : any) => {
+      item.products_images = item.products_images?.images[0] ?? "";
+      item.price = item.products_prices.price;
+      item.sale_percent = item.products_prices.sale_percent;
+      delete item.products_prices;
+      delete item.products_images;
+      return item;
+    });
+
+    return products;
   }
 }

@@ -59,7 +59,8 @@ export class ProductController {
   }
 
   @ApiOperation({ summary: 'Get all product by category' })
-  @Get(':category_id')
+  @Get('/category/:category_id')
+  @Public()
   async getProductByCategory(@Param('category_id') category_id: string) {
     const result = await this.productService.getProductByCategory(+category_id);
     try {
@@ -91,7 +92,7 @@ export class ProductController {
       );
     } catch (error) {
       console.error('Error fetching product:', error);
-      return ApiResponse.buildCollectionApiResponse(
+      return ApiResponse.buildApiResponse(
         null,
         HttpStatus.BAD_REQUEST,
         'Fail to fetch product',
