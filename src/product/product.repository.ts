@@ -43,16 +43,14 @@ export class ProductRepository {
               },
               warrantys: {
                 create: createProductDto.details.warranty,
-              },
+              }, 
               general: {
                 create: createProductDto.details.general,
               },
             },
           },
           products_images: {
-            create: {
-              images: createProductDto.product_images.images,
-            },
+            create: createProductDto.product_images,
           },
           products_prices: {
             create: createProductDto.prices,
