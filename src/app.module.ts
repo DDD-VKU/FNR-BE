@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './auth/guards';
 import { ProductModule } from './product/product.module';
+import { CartModule } from './cart/cart.module';
 
 const providers = [
   AppService,
@@ -15,7 +16,7 @@ const providers = [
   { provide: APP_GUARD, useClass: AtGuard },
 ];
 @Module({
-  imports: [PrismaModule, CustomerModule, AuthModule, ProductModule],
+  imports: [PrismaModule, CustomerModule, AuthModule, ProductModule, CartModule],
   controllers: [AppController],
   providers: providers,
 })

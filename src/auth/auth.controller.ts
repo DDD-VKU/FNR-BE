@@ -51,7 +51,7 @@ export class AuthController {
 
   @Get('check-token')
   @ApiBearerAuth('JWT-auth')
-  async checkToken(@GetCurrentUser() data: string) {
+  async checkToken(@GetCurrentUser() data: any) {
     return {
       status: 200,
       message: 'Success',

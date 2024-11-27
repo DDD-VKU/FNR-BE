@@ -45,7 +45,12 @@ export class CustomerRepository {
   async createCustomer(customer: CreateCustomerDto) {
     try {
       const result = await this.prismaService.customers.create({
-        data: customer,
+        data: {
+          ...customer,
+          carts: {
+            create: {},
+          },
+        },
       });
       return result;
     } catch (error) {
@@ -61,18 +66,16 @@ export class CustomerRepository {
           id: id,
         },
       });
-      console.log(result)
+      console.log(result);
       return result;
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return null;
     }
-    
   }
 
   //tìm địa chỉ customer theo id
-  
+
   async findAllAddressByCustomerId(id: number) {
     try {
       const result = await this.prismaService.address.findMany({
