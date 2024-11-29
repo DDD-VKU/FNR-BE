@@ -5,6 +5,7 @@ import { CreateAddressDto } from './dto/create-address.dto';
 
 @Injectable()
 export class CustomerRepository {
+  constructor(private readonly prismaService: PrismaService) {}
   async findOneCustomer(id: number) {
     try {
       const result = await this.prismaService.customers.findUnique({
@@ -41,7 +42,6 @@ export class CustomerRepository {
       return null;
     }
   }
-  constructor(private readonly prismaService: PrismaService) {}
   async createCustomer(customer: CreateCustomerDto) {
     try {
       const result = await this.prismaService.customers.create({
@@ -61,18 +61,16 @@ export class CustomerRepository {
           id: id,
         },
       });
-      console.log(result)
+      console.log(result);
       return result;
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return null;
     }
-    
   }
 
   //tìm địa chỉ customer theo id
-  
+
   async findAllAddressByCustomerId(id: number) {
     try {
       const result = await this.prismaService.address.findMany({
