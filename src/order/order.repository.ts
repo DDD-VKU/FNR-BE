@@ -1,37 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDetailDto, CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto } from './dto/create-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  async createOrder(
-    createOrderDto: CreateOrderDto,
-    createOrderdetail: CreateOrderDetailDto[],
-  ) {
+  async createOrder(createOrderDto: CreateOrderDto) {
     try {
-      const createOrder = await this.prismaService.orders.create({
+      const result = await this.prismaService.orders.create({
         data: {
-          payment_method: createOrderDto.paymentMethod,
+          payment_method: createOrderDto.payment_method,
           subtotal: createOrderDto.subtotal,
-          customer_id: 1,
+          customer_id: createOrderDto.customer_id,
+          addressId: createOrderDto.addressId,
+          order_detail: {
+            create: {
+              price: createOrderDto.orderDetails.price,
+              quantity: createOrderDto.orderDetails.quantity,
+              product_id: createOrderDto.orderDetails.product_id,
+            },
+          },
         },
       });
-      // create order detail
-      for (const detail of createOrderdetail) {
-        await this.prismaService.order_details.create({
-          data: {
-            order_id: createOrder.id,
-            product_id: detail.productId,
-            quantity: detail.quantity,
-            price: detail.price,
-          },
-        });
-      }
 
-      return createOrder;
+      return result;
     } catch (error) {
       console.log('Lỗi: ', error);
+      throw new Error('Error creating order');
       return null;
     }
   }
