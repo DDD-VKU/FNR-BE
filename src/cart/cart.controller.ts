@@ -25,7 +25,11 @@ export class CartController {
     try {
       const customer_id = data.sub;
       const cartUser = await this.cartService.findOne(customer_id);
-      return ApiResponse.buildApiResponse(cartUser, HttpStatus.OK, 'Success');
+      return ApiResponse.buildCollectionApiResponse(
+        cartUser,
+        HttpStatus.OK,
+        'Success',
+      );
     } catch (error) {
       return ApiResponse.buildApiResponse(
         null,
@@ -47,7 +51,11 @@ export class CartController {
         customer_id,
         updateCartDto,
       );
-      return ApiResponse.buildApiResponse(updateCart, HttpStatus.OK, 'Success');
+      return ApiResponse.buildCollectionApiResponse(
+        await this.cartService.findOne(customer_id),
+        HttpStatus.OK,
+        'Success',
+      );
     } catch (error) {
       return ApiResponse.buildApiResponse(
         null,

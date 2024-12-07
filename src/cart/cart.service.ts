@@ -8,7 +8,14 @@ import { CartAction } from './entities/cart-action';
 export class CartService {
   constructor(private readonly cartRepository: CartRepository) {}
   async findOne(customer_id: number) {
-    return this.cartRepository.getCartUser(customer_id);
+    const cartUser = await this.cartRepository.getCartUser(customer_id);
+    const cartRespon = cartUser.cart_item.map((item: any) => {
+      item.name = item.product.name;
+      item.image = item.product.products_images.images[0] ?? '';
+      delete item.product;
+      return item;
+    });
+    return cartRespon;
   }
 
   async updateCart(id: number, data: UpdateCartDto) {

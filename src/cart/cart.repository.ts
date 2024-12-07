@@ -12,9 +12,18 @@ export class CartRepository {
           customer_id: id,
         },
         include: {
-          cart_item: true,
+          cart_item: {
+            include: {
+              product: {
+                include: {
+                  products_images: true,
+                },
+              },
+            },
+          },
         },
       });
+
       return result;
     } catch (error) {
       return null;

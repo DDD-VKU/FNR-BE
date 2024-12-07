@@ -124,7 +124,7 @@ model cart_items {
   cart_id Int
 
   product    products @relation(fields: [product_id], references: [id])
-  product_id Int      @unique
+  product_id Int
 }
 
 model products {
