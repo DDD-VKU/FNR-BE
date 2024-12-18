@@ -1,9 +1,11 @@
 import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ApiResponse } from 'src/common/api-response';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { GetCurrentUser } from 'src/auth/decorators/get-current-user.decorator';
+import { use } from 'passport';
+// import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('order')
 export class OrderController {
@@ -11,12 +13,20 @@ export class OrderController {
 
   @ApiOperation({ summary: 'Create order' })
   @Post()
-  @Public()
-  async createOrder(@Body() createOrderDto: CreateOrderDto) {
-    const result = await this.orderService.createOrder(createOrderDto);
+  @ApiBearerAuth('JWT-auth')
+  async createOrder(
+    @Body() createOrderDto: CreateOrderDto,
+    @GetCurrentUser() data: any,
+  ) {
+    const customerId = data.sub;
+    console.log(customerId);
+    const result = await this.orderService.createOrder(
+      createOrderDto,
+      customerId,
+    );
     if (result) {
       return ApiResponse.buildApiResponse(
-        null,
+        result,
         HttpStatus.OK,
         'Order added successfully',
       );

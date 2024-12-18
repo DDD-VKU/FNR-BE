@@ -23,14 +23,16 @@ export class CreateOrderDto {
   @IsNotEmpty()
   subtotal: number;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  customer_id: number;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // customer_id: number;
 
   @ApiProperty()
   @IsNotEmpty()
   addressId: number;
 
-  @ApiProperty()
-  orderDetails: CreateOrderDetailDto;
+  @ApiProperty({
+    type: [CreateOrderDetailDto],
+  })
+  orderDetails: CreateOrderDetailDto[];
 }
