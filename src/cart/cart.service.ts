@@ -67,6 +67,14 @@ export class CartService {
       case CartAction.CLEAR: {
         return await this.cartRepository.clearCartItems(id);
       }
+      case CartAction.UPDATE: {
+        if (existingItem) {
+          return await this.cartRepository.updateCartItem(id, existingItem.id, {
+            quantity: data.quantity,
+          });
+        }
+        throw new Error('Product not found in cart');
+      }
       default:
         throw new Error('Invalid action');
     }
