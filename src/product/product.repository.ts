@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
+import { equal } from 'assert';
 
 @Injectable()
 export class ProductRepository {
@@ -10,7 +11,13 @@ export class ProductRepository {
       where: { id: id },
       include: {
         products_variants: true,
-        products_details: true,
+        products_details: {
+          include: {
+            dimensions: true,
+            warrantys: true,
+            general: true,
+          },
+        },
         products_images: true,
         products_prices: true,
         categories: true,
@@ -43,7 +50,7 @@ export class ProductRepository {
               },
               warrantys: {
                 create: createProductDto.details.warranty,
-              }, 
+              },
               general: {
                 create: createProductDto.details.general,
               },
@@ -76,30 +83,10 @@ export class ProductRepository {
     }
   }
 
-  //lấy product theo id và hiện các mối quan hệ với product
-  // async getProduct(id: number) {
-  //   return await this.prismaService.products.findUnique({
-  //     where: { id : id },
-  //     include: {
-  //       products_variants: true,
-  //       products_images: true,
-  //       products_details: {
-  //         include: {
-  //           dimensions: true,
-  //           warrantys: true,
-  //           general: true
-  //         }
-  //       },
-  //       products_prices: true,
-  //       categories: true
-  //     }
-  //   });
-  // }
-
   // lấy product theo category
   async getProductByCategory(category_id: number) {
-    return await this.prismaService.products.findMany({
-      where: { id: category_id },
+    const result = await this.prismaService.products.findMany({
+      where: { categories_id: category_id },
       include: {
         products_variants: true,
         products_images: true,
@@ -114,6 +101,16 @@ export class ProductRepository {
         categories: true,
       },
     });
+    console.log(result);
+    const products = result.map((item: any) => {
+      item.products_images = item.products_images?.images[0] ?? '';
+      item.price = item.products_prices.price;
+      item.sale_percent = item.products_prices.sale_percent;
+      delete item.products_prices;
+      return item;
+    });
+
+    return products;
   }
 
   //lấy tất cả product
@@ -130,7 +127,7 @@ export class ProductRepository {
     console.log(result[0]);
 
     const products = result.map((item: any) => {
-      item.image = item.products_images?.images[0] ?? '';
+      item.products_images = item.products_images?.images[0] ?? '';
       item.price = item.products_prices.price;
       item.sale_percent = item.products_prices.sale_percent;
       delete item.products_prices;
