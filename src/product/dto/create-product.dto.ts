@@ -155,12 +155,6 @@ export class CreateProductDto {
   })
   categories_id?: number;
 
-  // @ApiPropertyOptional({
-  //   type: [ProductVariantDto],
-  //   description: 'List of product variants',
-  // })
-  // variants?: ProductVariantDto;
-
   @ApiPropertyOptional({
     type: ProductImageDto,
     description: 'List of product images',

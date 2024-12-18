@@ -145,7 +145,7 @@ model products {
 
   // relationships with category
   categories    categories? @relation(fields: [categories_id], references: [id])
-  categories_id Int?
+  categories_id Int
 
   order_detail     order_details[]
   favorite_product favorite_product[]

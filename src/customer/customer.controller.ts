@@ -81,7 +81,7 @@ export class CustomerController {
   @Delete(':id')
   async deleteCustomer(@Param('id') id: string) {
     const result = await this.customerService.delete(+id);
-    if (result) { 
+    if (result) {
       return ApiResponse.buildApiResponse(
         result,
         HttpStatus.OK,
@@ -115,9 +115,8 @@ export class CustomerController {
       );
     }
   }
-    
 
-    @Get(':id')
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.customerService.findOneCustomer(+id);
   }

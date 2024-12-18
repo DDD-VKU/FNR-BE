@@ -5,6 +5,7 @@ import { CreateAddressDto } from './dto/create-address.dto';
 
 @Injectable()
 export class CustomerRepository {
+  constructor(private readonly prismaService: PrismaService) {}
   async findOneCustomer(id: number) {
     try {
       const result = await this.prismaService.customers.findUnique({
@@ -41,7 +42,6 @@ export class CustomerRepository {
       return null;
     }
   }
-  constructor(private readonly prismaService: PrismaService) {}
   async createCustomer(customer: CreateCustomerDto) {
     try {
       const result = await this.prismaService.customers.create({
