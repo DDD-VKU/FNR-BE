@@ -127,6 +127,7 @@ export class ProductRepository {
     console.log(result[0]);
 
     const products = result.map((item: any) => {
+      item.image = item.products_images?.images[0] ?? '';
       item.products_images = item.products_images?.images[0] ?? '';
       item.price = item.products_prices.price;
       item.sale_percent = item.products_prices.sale_percent;

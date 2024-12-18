@@ -19,7 +19,7 @@ export class OrderController {
     @GetCurrentUser() data: any,
   ) {
     const customerId = data.sub;
-    console.log(customerId);
+    console.log(typeof customerId);
     const result = await this.orderService.createOrder(
       createOrderDto,
       customerId,
