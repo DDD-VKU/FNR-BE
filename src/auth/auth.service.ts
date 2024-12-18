@@ -46,7 +46,7 @@ export class AuthService {
       throw new Error('Fail to create account');
     }
     const payload = {
-      customer_id: result.id,
+      customer_id: result.customer_id,
       email: result.email,
     };
 
@@ -82,7 +82,7 @@ export class AuthService {
       throw new Error('Invalid password');
     }
     const payload = {
-      customer_id: result.id,
+      customer_id: result.customer_id,
       email: result.email,
     };
     delete result.password;

@@ -6,7 +6,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class OrderRepository {
   constructor(private readonly prismaService: PrismaService) {}
   async createOrder(createOrderDto: CreateOrderDto, customer_id: number) {
-    console.log(customer_id);
     try {
       const result = await this.prismaService.orders.create({
         data: {
