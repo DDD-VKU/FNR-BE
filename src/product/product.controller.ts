@@ -12,12 +12,31 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { ApiResponse } from 'src/common/api-response';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+  @Public()
+  @Get('/category')
+  async findAllCategory() {
+    const result = await this.productService.findAllCategory();
+    try {
+      return ApiResponse.buildCollectionApiResponse(
+        result,
+        HttpStatus.OK,
+        'Category fetched successfully',
+      );
+    } catch (error) {
+      console.error('Error fetching category:', error);
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to fetch category',
+      );
+    }
+  }
   @Get(':id')
   @Public()
   @ApiOperation({ summary: 'Get product by id' })
@@ -115,6 +134,50 @@ export class ProductController {
         null,
         HttpStatus.BAD_REQUEST,
         'Fail to create product',
+      );
+    }
+  }
+
+  @Patch('category/:id')
+  @ApiBearerAuth('JWT-auth')
+  async updateCategory(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: any,
+  ) {
+    const result = await this.productService.updateCategory(
+      +id,
+      updateCategoryDto,
+    );
+    try {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Category updated successfully',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to update category',
+      );
+    }
+  }
+
+  @Delete('category/:id')
+  @ApiBearerAuth('JWT-auth')
+  async deleteCategory(@Param('id') id: string) {
+    const result = await this.productService.deleteCategory(+id);
+    try {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Category deleted successfully',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to delete category',
       );
     }
   }

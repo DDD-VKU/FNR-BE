@@ -6,6 +6,28 @@ import { equal } from 'assert';
 
 @Injectable()
 export class ProductRepository {
+  async deleteCategory(id: number) {
+    const result = await this.prismaService.categories.delete({
+      where: { id },
+    });
+    return result;
+  }
+  async updateCategory(id: number, updateCategoryDto: any) {
+    delete updateCategoryDto.id;
+    const result = await this.prismaService.categories.update({
+      where: { id: id },
+      data: {
+        name: updateCategoryDto.name,
+      },
+    });
+    return result;
+  }
+  async findAllCategory() {
+    const result = await this.prismaService.categories.findMany({
+      orderBy: { id: 'asc' },
+    });
+    return result;
+  }
   async findOne(id: number) {
     const product = await this.prismaService.products.findUnique({
       where: { id: id },
@@ -101,7 +123,6 @@ export class ProductRepository {
         categories: true,
       },
     });
-    console.log(result);
     const products = result.map((item: any) => {
       item.products_images = item.products_images?.images[0] ?? '';
       item.price = item.products_prices.price;
@@ -123,8 +144,6 @@ export class ProductRepository {
         products_prices: true,
       },
     });
-
-    console.log(result[0]);
 
     const products = result.map((item: any) => {
       item.image = item.products_images?.images[0] ?? '';

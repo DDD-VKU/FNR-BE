@@ -68,9 +68,15 @@ export class CartService {
         return await this.cartRepository.clearCartItems(id);
       }
       case CartAction.UPDATE: {
+        const existingItem = cartUser.cart_item.find(
+          (item) => item.id === data.product_id,
+        );
+        console.log(existingItem);
+
         if (existingItem) {
           return await this.cartRepository.updateCartItem(id, existingItem.id, {
             quantity: data.quantity,
+            price: data.price,
           });
         }
         throw new Error('Product not found in cart');

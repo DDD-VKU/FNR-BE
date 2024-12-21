@@ -29,7 +29,6 @@ export class AuthService {
       phone: registerDto.phone,
     };
     const customer = await this.customerService.create(customerDto);
-    console.log(customer);
     if (!customer) {
       throw new Error('Fail to create customer');
     }
