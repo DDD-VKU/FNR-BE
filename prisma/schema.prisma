@@ -57,6 +57,7 @@ model address {
   phone      String
   province   String
   zipcode    String
+  email      String
 
   // relationship with customer
   customer    customers @relation(fields: [customer_id], references: [id], onDelete: Cascade)

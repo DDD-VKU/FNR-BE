@@ -39,6 +39,7 @@ export class CustomerRepository {
         return result;
       }
     } catch (error) {
+      console.log(error);
       return null;
     }
   }

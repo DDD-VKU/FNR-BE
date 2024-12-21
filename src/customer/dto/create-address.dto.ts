@@ -1,9 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Matches } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsString, Matches } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateAddressDto {
-  @ApiProperty()
-  @IsNumber()
+  @ApiPropertyOptional()
+  @Type(() => Number)
   customer_id: number;
   @ApiProperty({
     example: 'Ho Chi Minh City',
@@ -38,4 +39,8 @@ export class CreateAddressDto {
   @IsString()
   @Matches(/^\d{10,11}?$/, { message: 'Invalid phone number' })
   phone: string;
+
+  @ApiProperty()
+  @IsEmail()
+  email: string;
 }

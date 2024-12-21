@@ -15,6 +15,7 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { ApiResponse } from 'src/common/api-response';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { GetCurrentUser } from 'src/auth/decorators/get-current-user.decorator';
 
 @Controller('customer')
 export class CustomerController {
@@ -41,8 +42,14 @@ export class CustomerController {
   }
 
   @Post('address')
-  createAddress(@Body() createAddressDto: CreateAddressDto) {
-    const result = this.customerService.createAddress(createAddressDto);
+  @ApiBearerAuth('JWT-auth')
+  async createAddress(
+    @Body() createAddressDto: CreateAddressDto,
+    @GetCurrentUser() data: any,
+  ) {
+    const customerId = data.sub;
+    createAddressDto.customer_id = customerId;
+    const result = await this.customerService.createAddress(createAddressDto);
     if (result) {
       return ApiResponse.buildApiResponse(
         result,

@@ -12,7 +12,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { ApiResponse } from 'src/common/api-response';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('products')
@@ -40,6 +40,7 @@ export class ProductController {
   }
 
   @ApiOperation({ summary: 'Create category' })
+  @ApiBearerAuth('JWT-auth')
   @Post('/category')
   createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     const result = this.productService.createCategory(createCategoryDto);
