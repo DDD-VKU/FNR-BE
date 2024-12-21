@@ -67,7 +67,6 @@ export class CustomerRepository {
           id: id,
         },
       });
-      console.log(result);
       return result;
     } catch (error) {
       console.log(error);
