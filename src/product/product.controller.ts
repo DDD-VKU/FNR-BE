@@ -14,6 +14,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { ApiResponse } from 'src/common/api-response';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductController {
@@ -179,6 +180,50 @@ export class ProductController {
         null,
         HttpStatus.BAD_REQUEST,
         'Fail to delete category',
+      );
+    }
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth('JWT-auth')
+  async updateProduct(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    const result = await this.productService.updateProduct(
+      +id,
+      updateProductDto,
+    );
+    try {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Product updated successfully',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to update product',
+      );
+    }
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth('JWT-auth')
+  async deleteProduct(@Param('id') id: string) {
+    const result = await this.productService.deleteProduct(+id);
+    try {
+      return ApiResponse.buildApiResponse(
+        result,
+        HttpStatus.OK,
+        'Product deleted successfully',
+      );
+    } catch (error) {
+      return ApiResponse.buildApiResponse(
+        null,
+        HttpStatus.BAD_REQUEST,
+        'Fail to delete product',
       );
     }
   }

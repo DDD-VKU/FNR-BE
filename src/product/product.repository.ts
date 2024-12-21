@@ -2,10 +2,98 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
-import { equal } from 'assert';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductRepository {
+  async deleteProduct(id: number) {
+    const result = await this.prismaService.products.delete({
+      where: { id },
+    });
+    return result;
+  }
+  async updateProduct(id: number, updateProductDto: UpdateProductDto) {
+    try {
+      delete updateProductDto.products_details.dimensions.id;
+      const productUpdate: Prisma.productsUpdateInput = {
+        name: updateProductDto.name,
+        description: updateProductDto.description,
+        categories: {
+          connect: {
+            id: updateProductDto.categories_id,
+          },
+        },
+        SKU: updateProductDto.SKU,
+        tags: updateProductDto.tags,
+        products_details: {
+          update: {
+            long_description:
+              updateProductDto.products_details.long_description,
+            sort_description:
+              updateProductDto.products_details.sort_description,
+            dimensions: {
+              update: {
+                data: {
+                  depth: updateProductDto.products_details.dimensions.depth,
+                  height: updateProductDto.products_details.dimensions.height,
+                  weight: updateProductDto.products_details.dimensions.weight,
+                  width: updateProductDto.products_details.dimensions.width,
+                },
+              },
+            },
+            warranty: {
+              update: updateProductDto.products_details.warranty,
+            },
+            general: {
+              update: {
+                where: {
+                  id: updateProductDto.products_details.general.id,
+                },
+                data: {
+                  model_number:
+                    updateProductDto.products_details.general.model_number,
+                  sales_package:
+                    updateProductDto.products_details.general.sales_package,
+                  secondary_material:
+                    updateProductDto.products_details.general
+                      .secondary_material,
+                  upholstery_color:
+                    updateProductDto.products_details.general.upholstery_color,
+                  upholstery_material:
+                    updateProductDto.products_details.general
+                      .upholstery_material,
+                  configuration:
+                    updateProductDto.products_details.general.configuration,
+                },
+              },
+            },
+          },
+        },
+        products_images: {
+          update: {
+            images: updateProductDto.products_images.images,
+          },
+        },
+        products_prices: {
+          update: {
+            price: updateProductDto.products_prices.price,
+            sale_percent: updateProductDto.products_prices.sale_percent,
+          },
+        },
+      };
+      const result = await this.prismaService.products.update({
+        where: { id },
+        data: productUpdate,
+      });
+
+      return result;
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw new Error('Failed to update product');
+    }
+  }
+
   async deleteCategory(id: number) {
     const result = await this.prismaService.categories.delete({
       where: { id },
@@ -36,7 +124,7 @@ export class ProductRepository {
         products_details: {
           include: {
             dimensions: true,
-            warrantys: true,
+            warranty: true,
             general: true,
           },
         },
@@ -65,24 +153,44 @@ export class ProductRepository {
           },
           products_details: {
             create: {
-              long_description: createProductDto.details.long_description,
-              sort_description: createProductDto.details.sort_description,
+              long_description:
+                createProductDto.products_details.long_description,
+              sort_description:
+                createProductDto.products_details.sort_description,
               dimensions: {
-                create: createProductDto.details.dimensions,
+                create: {
+                  depth: Number(
+                    createProductDto.products_details.dimensions.depth,
+                  ),
+                  height: Number(
+                    createProductDto.products_details.dimensions.height,
+                  ),
+                  weight: Number(
+                    createProductDto.products_details.dimensions.weight,
+                  ),
+                  width: Number(
+                    createProductDto.products_details.dimensions.width,
+                  ),
+                },
               },
-              warrantys: {
-                create: createProductDto.details.warranty,
+              warranty: {
+                create: createProductDto.products_details.warranty,
               },
               general: {
-                create: createProductDto.details.general,
+                create: createProductDto.products_details.general,
               },
             },
           },
           products_images: {
-            create: createProductDto.product_images,
+            create: createProductDto.products_images,
           },
           products_prices: {
-            create: createProductDto.prices,
+            create: {
+              price: Number(createProductDto.products_prices.price),
+              sale_percent: Number(
+                createProductDto.products_prices.sale_percent,
+              ),
+            },
           },
         },
       });
@@ -115,7 +223,7 @@ export class ProductRepository {
         products_details: {
           include: {
             dimensions: true,
-            warrantys: true,
+            warranty: true,
             general: true,
           },
         },
@@ -143,6 +251,7 @@ export class ProductRepository {
         // products_details: true,
         products_prices: true,
       },
+      orderBy: { id: 'asc' },
     });
 
     const products = result.map((item: any) => {

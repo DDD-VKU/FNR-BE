@@ -2,9 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { ProductRepository } from './product.repository';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
+  async deleteProduct(id: number) {
+    return await this.productRepository.deleteProduct(id);
+  }
+  async updateProduct(id: number, updateProductDto: UpdateProductDto) {
+    return await this.productRepository.updateProduct(id, updateProductDto);
+  }
   async deleteCategory(id: number) {
     return await this.productRepository.deleteCategory(id);
   }

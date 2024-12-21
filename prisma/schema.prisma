@@ -40,7 +40,7 @@ model accounts {
   email    String @unique
   password String
 
-  customers   customers @relation(fields: [customer_id], references: [id])
+  customers   customers @relation(fields: [customer_id], references: [id], onDelete: Cascade)
   customer_id Int       @unique
 
   created_at DateTime  @default(now())
@@ -111,7 +111,7 @@ model order_details {
 model carts {
   id          Int       @id @default(autoincrement())
   customer_id Int       @unique
-  customer    customers @relation(fields: [customer_id], references: [id])
+  customer    customers @relation(fields: [customer_id], references: [id], onDelete: Cascade)
 
   cart_item cart_items[]
 }
@@ -124,7 +124,7 @@ model cart_items {
   carts   carts @relation(fields: [cart_id], references: [id])
   cart_id Int
 
-  product    products @relation(fields: [product_id], references: [id])
+  product    products @relation(fields: [product_id], references: [id], onDelete: Cascade)
   product_id Int
 }
 
@@ -145,7 +145,7 @@ model products {
   products_prices   products_prices?
 
   // relationships with category
-  categories    categories? @relation(fields: [categories_id], references: [id])
+  categories    categories? @relation(fields: [categories_id], references: [id], onDelete: Cascade)
   categories_id Int
 
   order_detail     order_details[]
@@ -194,8 +194,8 @@ model categories {
 }
 
 model products_details {
-  id               Int    @id @default(autoincrement())
-  sort_description String
+  id               Int     @id @default(autoincrement())
+  sort_description String?
   long_description String
 
   //... 
@@ -204,11 +204,11 @@ model products_details {
   deleted_at DateTime?
 
   // relationships
-  products    products @relation(fields: [products_id], references: [id])
+  products    products @relation(fields: [products_id], references: [id], onDelete: Cascade)
   products_id Int      @unique
 
   dimensions dimensions?
-  warrantys  warrantys?
+  warranty   warrantys?
   general    general?
 }
 
@@ -220,7 +220,7 @@ model products_images {
   deleted_at DateTime?
 
   // relationships
-  products    products @relation(fields: [products_id], references: [id])
+  products    products @relation(fields: [products_id], references: [id], onDelete: Cascade)
   products_id Int      @unique
 }
 
@@ -233,13 +233,13 @@ model products_prices {
   deleted_at   DateTime?
 
   // relationships
-  products    products @relation(fields: [products_id], references: [id])
+  products    products @relation(fields: [products_id], references: [id], onDelete: Cascade)
   products_id Int      @unique
 }
 
 model products_variants {
   id          Int      @id @default(autoincrement())
-  products    products @relation(fields: [products_id], references: [id])
+  products    products @relation(fields: [products_id], references: [id], onDelete: Cascade)
   products_id Int      @unique
   size        String[]
   color       String[]
@@ -253,7 +253,7 @@ model dimensions {
   weight                         Float?
   seat_height                    Float?
   leg_height                     Float?
-  productsDetail                 products_details @relation(fields: [products_dimensions_details_id], references: [id])
+  productsDetail                 products_details @relation(fields: [products_dimensions_details_id], references: [id], onDelete: Cascade)
   products_dimensions_details_id Int              @unique
 }
 
@@ -264,7 +264,7 @@ model warrantys {
   covered_in_warranty           String?
   not_covered_in_warranty       String?
   domestic_warranty             String?
-  productsDetail                products_details @relation(fields: [products_warrantys_details_id], references: [id])
+  productsDetail                products_details @relation(fields: [products_warrantys_details_id], references: [id], onDelete: Cascade)
   products_warrantys_details_id Int              @unique
 }
 
@@ -278,7 +278,7 @@ model general {
   upholstery_color    String?
 
   //relationship
-  productsDetail products_details @relation(fields: [products_general_details_id], references: [id])
+  productsDetail products_details @relation(fields: [products_general_details_id], references: [id], onDelete: Cascade)
 
   // Foreign key
   products_general_details_id Int @unique

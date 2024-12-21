@@ -1,28 +1,33 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class DimensionsDto {
   @ApiPropertyOptional({
     description: 'Width of the product in units',
     example: 20.5,
   })
+  @Type(() => Number)
   width?: number;
 
   @ApiPropertyOptional({
     description: 'Height of the product in units',
     example: 15.0,
   })
+  @Type(() => Number)
   height?: number;
 
   @ApiPropertyOptional({
     description: 'Depth of the product in units',
     example: 10.0,
   })
+  @Type(() => Number)
   depth?: number;
 
   @ApiPropertyOptional({
     description: 'Weight of the product in kilograms',
     example: 2.5,
   })
+  @Type(() => Number)
   weight?: number;
 }
 
@@ -74,6 +79,7 @@ export class GeneralDto {
 }
 
 export class ProductImageDto {
+  id?: number;
   @ApiProperty({
     description: 'List of image URLs',
     example: [
@@ -159,17 +165,17 @@ export class CreateProductDto {
     type: ProductImageDto,
     description: 'List of product images',
   })
-  product_images?: ProductImageDto;
+  products_images?: ProductImageDto;
 
   @ApiPropertyOptional({
     type: ProductDetailsDto,
     description: 'Detailed information about the product',
   })
-  details: ProductDetailsDto;
+  products_details?: ProductDetailsDto;
 
   @ApiPropertyOptional({
     type: ProductPriceDto,
     description: 'List of product prices',
   })
-  prices?: ProductPriceDto;
+  products_prices?: ProductPriceDto;
 }
